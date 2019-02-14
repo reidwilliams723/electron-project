@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../app/assets/style.css" type='text/css'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware Manager</title>
+  </head>
+  <body>
+      <div id='mainMenu'>
+          <div class='jumbotron jumbotron-fluid mh-100%'>
+              <div class='container'>
+                <h1 id='title'class='display-4'>MAIN MENU</h1>
+                <p>
+                  <div class='row'>
+                    <div class='col'>
+                      <button class='btn btn-primary'>DURO1 TEST</button>
+                    </div>
+                    <div class='col'>
+                      <button class='btn btn-primary'>DURO1</button>
+                    </div>
+                    <div class='col'>
+                        <button name='expansionBoards' class='btn btn-primary'>EXPANSION BOARDS</button>
+                    </div>
+                  </div>
+                </p>
+              </div>
+            </div>
+      </div>
+      <div id='expansionBoards' hidden='true'>
+          <div class='jumbotron jumbotron-fluid'>
+              <div class='container'>
+                <button name='mainMenu' class='btn btn-primary back'><-- MAIN MENU </button>
+                <h1 id='title'class='display-4'>EXPANSION BOARDS</h1>
+                <p>
+                  <div class='row'>
+                    <div class='col'>
+                      <button name='analogExpansionBoard' class='btn btn-primary'>ANALOG</button>
+                    </div>
+                    <div class='col'>
+                      <button name='frequencyExpansionBoard' class='btn btn-primary'>FREQUENCY</button>
+                    </div>
+                    <div class='col'>
+                        <button name='canBusExpansionBoard' class='btn btn-primary'>CANBUS</button>
+                    </div>
+                    <div class='col'>
+                        <button name='mosfetExpansionBoard' class='btn btn-primary'>MOSFET</button>
+                    </div>
+                  </div>
+                </p>
+              </div>
+            </div>
+      </div>
+      <div id='analogExpansionBoard' hidden='true'>
+          <div class='jumbotron jumbotron-fluid'>
+              <div class='container'>
+                  <button name='expansionBoards' class='btn btn-primary back'><-- EXPANSION BOARDS </button>
+                <h1 id='title'class='display-4'>ANALOG EXPANSION BOARD</h1>
+                <p>
+                  <div class='row'>
+                    <div class='col'>
+                      <button class='btn btn-primary flash'>FLASH</button>
+                    </div>
+                  </div>
+                </p>
+              </div>
+            </div>
+      </div>
+      <div id='frequencyExpansionBoard' hidden='true'>
+          <div class='jumbotron jumbotron-fluid'>
+              <div class='container'>
+                  <button name='expansionBoards'class='btn btn-primary back'><-- EXPANSION BOARDS </button>
+                <h1 id='title'class='display-4'>FREQUENCY EXPANSION BOARD</h1>
+                <p>
+                  <div class='row'>
+                    <div class='col'>
+                      <button class='btn btn-primary flash'>FLASH</button>
+                    </div>
+                  </div>
+                </p>
+              </div>
+            </div>
+      </div>
+      <div id='canBusExpansionBoard' hidden='true'>
+          <div class='jumbotron jumbotron-fluid'>
+              <div class='container'>
+                  <button name='expansionBoards'class='btn btn-primary back'><-- EXPANSION BOARDS </button>
+                <h1 id='title'class='display-4'>CANBUS EXPANSION BOARD</h1>
+                <p>
+                  <div class='row'>
+                    <div class='col'>
+                      <button class='btn btn-primary flash'>FLASH</button>
+                    </div>
+                  </div>
+                </p>
+              </div>
+            </div>
+      </div>
+      <div id='mosfetExpansionBoard' hidden='true'>
+          <div class='jumbotron jumbotron-fluid'>
+              <div class='container'>
+                  <button name='expansionBoards' class='btn btn-primary back'><-- EXPANSION BOARDS </button>
+                <h1 id='title'class='display-4'>MOSFET EXPANSION BOARD</h1>
+                <p>
+                  <div class='row'>
+                    <div class='col'>
+                      <button class='btn btn-primaryflash'>FLASH</button>
+                    </div>
+                  </div>
+                </p>
+              </div>
+            </div>
+      </div>
+    <script>
+      require('./renderer.js')
+    </script>
+  </body>
+</html>
+
+
