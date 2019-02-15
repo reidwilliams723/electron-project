@@ -27,10 +27,48 @@ function getSectionId(btn){
 var flashBtns = document.querySelectorAll('.flash');
 
 flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
-    mainProcess.createWindow('status-popup.html', 400, 400, false);
-    //var python = require('child_process').spawn('python', ['./app/python/hello.py']);
-    //var python = require('child_process').spawn('./app/arduino/arduino-cli', ['version']);
-    //python.stdout.on('data',function(data){
-    //    console.log("data: ",data.toString('utf8'));
-    //});
+    const ipc = require('electron').ipcRenderer;
+    
+    ipc.send('show-progressbar');
+        
+    var folder = '';
+    var board = btn.srcElement.getAttribute('name');
+    var port = '/dev/cu.usbmodem141240';
+
+    switch (board){
+        case 'analog':
+            folder = 'AnalogInputs4_20';
+            break;
+        case 'frequency':
+            folder += '';
+            break;
+        case 'canbus':
+            folder += '';
+            break;
+        case 'mosfet':
+            folder += '';
+            break;
+    }
+
+    //var python = require('child_process').spawn('python', ['./app/python/firmwareupdates.py', path, port]);
+    var python = require('child_process').spawn('bash', ['./app/scripts/firmwareupdates.sh', folder]);
+    python.stdout.pipe(process.stdout);
+    python.stderr.pipe(process.stderr);
+    python.stdout.setEncoding('utf8');
+    python.stdout.on('data', function(data){
+
+        //data = removeLineBreaks(data);
+
+        if(data.includes('Upload Success')){
+            ipc.send('set-progressbar-completed');
+        }
+        else if (data.includes('Upload Failed')){
+            ipc.send('progressbar-failed');
+        }
+    })
 })});
+
+function removeLineBreaks(string){
+    return string.replace(/(\r\n|\n|\r)/gm, "");
+}
+

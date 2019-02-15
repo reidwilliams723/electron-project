@@ -1,10 +1,12 @@
-/*
-// Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
 
+// Modules to control application life and create native browser window
+const {app, BrowserWindow, ipcMain} = require('electron')
+const ProgressBar = require('electron-progressbar');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let progressBar;
+let uploadStatus;
 
 function createWindow () {
 
@@ -19,10 +21,16 @@ function createWindow () {
 
   //mainWindow.setFullScreen(true);
   // and load the index.html of the app.
-  mainWindow.loadFile('app/index.html')
+  mainWindow.loadFile('./app/index.html')
+
+  ipcMain.on('show-progressbar', showProgressbar);
+
+  ipcMain.on('progressbar-failed', progressFailed)
+	
+	ipcMain.on('set-progressbar-completed', setProgressbarCompleted);
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+   //mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -53,7 +61,60 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
-})*/
+})
+
+function showProgressbar () {
+	if (progressBar) {
+		return;
+	}
+	
+	progressBar = new ProgressBar({
+		text: 'Uploading...',
+    detail: 'Wait...',
+    closeOnComplete: true,
+		browserWindow: {
+      parent: mainWindow,
+      modal: true,
+      closable: true
+		}
+	});
+	
+	progressBar
+		.on('completed', function() {
+			progressBar = null;
+    });
+    
+    progressBar
+      .on('aborted', function() {
+        progressBar = null;
+      });
+	
+	// launch the task...
+	// launchTask();
+}
+
+function setProgressbarCompleted () {
+	if (progressBar) {
+    uploadStatus = 'Success.'
+    progressBar.text = 'Upload ' + uploadStatus
+    progressBar.detail = 'Exiting...';
+    setTimeout(function(){
+      progressBar.setCompleted();
+    }, 3000);
+	}
+}
+
+function progressFailed (){
+  if (progressBar) {
+    uploadStatus = 'Failed.'
+    progressBar.text = 'Upload ' + uploadStatus
+    progressBar.detail = 'Exiting...';
+    setTimeout(function(){
+      progressBar.setCompleted();
+    }, 3000);
+	}
+}
+/*
 
 const { app, BrowserWindow} = require('electron');
 
@@ -95,4 +156,4 @@ newWindow.on('closed', () => {
 });
   windows.add(newWindow); 
   return newWindow;
-};
+};*/
