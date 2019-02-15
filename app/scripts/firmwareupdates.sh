@@ -40,10 +40,13 @@ fi
 
 echo Uploading code
 uploadOutput=$(./arduino-cli upload -p $port --fqbn $fqbn $firmwareRepo --verbose)
-echo uploadOutput
+echo $uploadOutput
 if [[ $uploadOutput == *"Please compile first"* ]]; then
     echo Upload Failed
     exit 1
 fi
+
+rm "${firmwareRepo}/${1}.arduino.avr.mega.elf"
+rm "${firmwareRepo}/${1}.arduino.avr.mega.hex"
 
 echo Upload Success

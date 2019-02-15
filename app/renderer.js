@@ -40,25 +40,21 @@ flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
             folder = 'AnalogInputs4_20';
             break;
         case 'frequency':
-            folder += '';
+            folder += 'FreqInput_Type5';
             break;
         case 'canbus':
-            folder += '';
+            folder += 'Engine_Can_Type_7';
             break;
         case 'mosfet':
-            folder += '';
+            folder += 'MOSFETOut';
             break;
     }
-
-    //var python = require('child_process').spawn('python', ['./app/python/firmwareupdates.py', path, port]);
+    
     var python = require('child_process').spawn('bash', ['./app/scripts/firmwareupdates.sh', folder]);
     python.stdout.pipe(process.stdout);
     python.stderr.pipe(process.stderr);
     python.stdout.setEncoding('utf8');
     python.stdout.on('data', function(data){
-
-        //data = removeLineBreaks(data);
-
         if(data.includes('Upload Success')){
             ipc.send('set-progressbar-completed');
         }
@@ -67,8 +63,3 @@ flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
         }
     })
 })});
-
-function removeLineBreaks(string){
-    return string.replace(/(\r\n|\n|\r)/gm, "");
-}
-
