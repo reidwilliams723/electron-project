@@ -24,13 +24,13 @@ function createWindow () {
   mainWindow.loadFile('./app/index.html')
 
   ipcMain.on('show-progressbar', showProgressbar);
-
-  ipcMain.on('progressbar-failed', progressFailed)
 	
-	ipcMain.on('set-progressbar-completed', setProgressbarCompleted);
+  ipcMain.on('set-progressbar-completed', (event, args) => setProgressbarCompleted(args));
+  
+  ipcMain.on('update-progressbar', (event, args) => updateProgressText(args))
 
   // Open the DevTools.
-   //mainWindow.webContents.openDevTools()
+   mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -93,10 +93,10 @@ function showProgressbar () {
 	// launchTask();
 }
 
-function setProgressbarCompleted () {
+function setProgressbarCompleted (args) {
 	if (progressBar) {
     uploadStatus = 'Success.'
-    progressBar.text = 'Upload ' + uploadStatus
+    progressBar.text = 'Upload ' + args
     progressBar.detail = 'Exiting...';
     setTimeout(function(){
       progressBar.setCompleted();
@@ -104,56 +104,10 @@ function setProgressbarCompleted () {
 	}
 }
 
-function progressFailed (){
+function updateProgressText(args) {
   if (progressBar) {
-    uploadStatus = 'Failed.'
-    progressBar.text = 'Upload ' + uploadStatus
-    progressBar.detail = 'Exiting...';
+    progressBar.text = args;
     setTimeout(function(){
-      progressBar.setCompleted();
     }, 3000);
-	}
+  }
 }
-/*
-
-const { app, BrowserWindow} = require('electron');
-
-const windows = new Set();
-
-app.on('ready', () => {
-  createWindow('index.html', 800, 600, true);
-});
-
-app.on('window-all-closed', () => {
-  if (process.platform === 'darwin') {
-    return false;
-  }
-});
-
-app.on('activate', (event, hasVisibleWindows) => {
-  if (!hasVisibleWindows) { createWindow('index.html', 800, 600, true); }
-});
-
-const createWindow = exports.createWindow = (page, width, height, enableFrame) => {
-  
-
-  let x, y;
-  const currentWindow = BrowserWindow.getFocusedWindow();
-  if (currentWindow) {
-    x = currentWindow.width / 2;
-    y = currentWindow.height / 2;
-  }
-  let newWindow = new BrowserWindow({ x, y, width: width, height: height, show: false, frame: enableFrame });
-  newWindow.loadURL(`file://${__dirname}/${page}`);
-  newWindow.webContents.openDevTools()
-  newWindow.once('ready-to-show', () => {
-    newWindow.show();
-});
-
-newWindow.on('closed', () => {
-    windows.delete(newWindow);
-    newWindow = null;
-});
-  windows.add(newWindow); 
-  return newWindow;
-};*/

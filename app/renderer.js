@@ -1,4 +1,5 @@
 const { remote, ipcRenderer } = require('electron');
+const ipc = require('electron').ipcRenderer;
 const mainProcess = remote.require('./main.js');
 
 var btns = document.querySelectorAll('.btn');
@@ -27,13 +28,12 @@ function getSectionId(btn){
 var flashBtns = document.querySelectorAll('.flash');
 
 flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
-    const ipc = require('electron').ipcRenderer;
     
     ipc.send('show-progressbar');
         
     var folder = '';
     var board = btn.srcElement.getAttribute('name');
-    var port = '/dev/cu.usbmodem141240';
+    var port = '/dev/cu.usbmodem142240';
 
     switch (board){
         case 'analog':
@@ -49,17 +49,43 @@ flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
             folder += 'MOSFETOut';
             break;
     }
-    
-    var python = require('child_process').spawn('bash', ['./app/scripts/firmwareupdates.sh', folder]);
-    python.stdout.pipe(process.stdout);
-    python.stderr.pipe(process.stderr);
-    python.stdout.setEncoding('utf8');
-    python.stdout.on('data', function(data){
-        if(data.includes('Upload Success')){
-            ipc.send('set-progressbar-completed');
+
+    ipc.send('update-progressbar', "Burning Bootloader...");
+    runBootLoader(folder);
+})});
+
+function runBootLoader(folder){
+    var bootLoader = require('child_process').spawn('bash', ['./app/scripts/bootloader.sh']);
+    bootLoader.stdout.pipe(process.stdout);
+    bootLoader.stderr.pipe(process.stderr);
+
+    bootLoader.on('exit', function(code){
+        if(code === 0){
+            ipc.send('update-progressbar', "Bootloader complete!");
+            runfirmwareInstallation(folder)
         }
         else if (data.includes('Upload Failed')){
-            ipc.send('progressbar-failed');
+            ipc.send('set-progressbar-completed');
+        }
+    });
+    
+}
+
+function runfirmwareInstallation(folder){
+    ipc.send('update-progressbar', "Uploading Firmware...");
+
+    var python = require('child_process').spawn('bash', ['./app/scripts/firmwareinstall.sh', folder]);
+
+    python.stdout.pipe(process.stdout);
+    python.stderr.pipe(process.stderr);
+
+    python.on('exit', function(code){
+        if(code === 0){
+            ipc.send('set-progressbar-completed', "Success");
+        }
+        else {
+            ipc.send('set-progressbar-completed', "Failed");
         }
     })
-})});
+}
+
