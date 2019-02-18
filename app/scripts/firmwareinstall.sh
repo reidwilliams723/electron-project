@@ -19,7 +19,7 @@ boardListOutput=$(arduino-cli board list)
 
 if [[ $boardListOutput != *"Arduino/Genuino Mega or Mega 2560"* ]]; then
     echo Installing core $core
-    ./arduino-cli core install $core
+    arduino-cli core install $core
 
     echo Retrieving board list again
     boardListOutput=$(arduino-cli board list)

@@ -22,7 +22,7 @@ function getSectionId(btn){
         return btn.parentElement.parentElement.parentElement.id;
     }
     else
-        return btn.parentElement.parentElement.parentElement.parentElement.parentElement.id;
+        return btn.parentElement.parentElement.parentElement.parentElement.id;
 }
 
 var flashBtns = document.querySelectorAll('.flash');
