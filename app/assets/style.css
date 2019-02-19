@@ -44,10 +44,6 @@ html, body {
     width: 100%;
   }
 
-.jumbotron{
-    background-color: rgb(27,62,111);
-    height: 100%;
-}
 .container-fluid{
     height: 100%;
     width: 100%;
@@ -78,13 +74,12 @@ html, body {
 }
 
 .btn.btn-primary.back {
-    width: 50%;
+    width: 20%;
+    font-size: 1vw;
 }
 
-.display-4 {
-    color: rgb(244,251,254);
-    font-family: 'brutal-extra-light';
-    font-size: 60pt;
+.btn.btn-primary.flash {
+    padding: 5%;
 }
 
 h1 {

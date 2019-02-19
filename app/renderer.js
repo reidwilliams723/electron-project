@@ -18,11 +18,11 @@ btns.forEach(function(btn) {
 
 function getSectionId(btn){
     btn = btn.srcElement;
-    if(btn.parentElement.getAttribute('class') === 'container'){
-        return btn.parentElement.parentElement.parentElement.id;
+    if(btn.getAttribute('class').includes('back')){
+        return btn.parentElement.parentElement.parentElement.parentElement.id;
     }
     else
-        return btn.parentElement.parentElement.parentElement.parentElement.id;
+        return btn.parentElement.parentElement.parentElement.id;
 }
 
 var flashBtns = document.querySelectorAll('.flash');
@@ -33,7 +33,7 @@ flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
         
     var folder = '';
     var board = btn.srcElement.getAttribute('name');
-    var port = '/dev/cu.usbmodem142240';
+    var port = '/dev/cu.usbmodem142230';
 
     switch (board){
         case 'analog':

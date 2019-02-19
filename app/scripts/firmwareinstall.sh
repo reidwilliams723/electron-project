@@ -1,6 +1,6 @@
 #Variables
 boardDirectory="newFirmware/${1}"
-port="/dev/cu.usbmodem142240"
+port="/dev/cu.usbmodem142230"
 firmwareRepo="/Users/reidwilliams/Repositories/ioteqKernel/${boardDirectory}"
 fqbn='arduino:avr:mega'
 core='arduino:avr'
@@ -41,7 +41,7 @@ fi
 echo Uploading code
 uploadOutput=$(arduino-cli upload -p $port --fqbn $fqbn $firmwareRepo --verbose)
 echo $uploadOutput
-if [[ $uploadOutput == *"Please compile first"* ] || [ $uploadOutput == *"Error"* ]]; then
+if [[ $uploadOutput == *"Please compile first"* || $uploadOutput == *"Error"* ]]; then
     echo Upload Failed
     exit 1
 fi
