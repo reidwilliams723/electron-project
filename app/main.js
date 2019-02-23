@@ -71,7 +71,7 @@ function showProgressbar () {
 	progressBar = new ProgressBar({
 		text: 'Uploading...',
     detail: 'Wait...',
-    closeOnComplete: true,
+    closeOnComplete: false,
 		browserWindow: {
       parent: mainWindow,
       modal: true,
@@ -95,8 +95,7 @@ function showProgressbar () {
 
 function setProgressbarCompleted (args) {
 	if (progressBar) {
-    uploadStatus = 'Success.'
-    progressBar.text = 'Upload ' + args
+    progressBar.text = args
     progressBar.detail = 'Exiting...';
     setTimeout(function(){
       progressBar.setCompleted();

@@ -4,7 +4,7 @@ port="/dev/cu.usbmodem142230"
 firmwareRepo="/Users/reidwilliams/Repositories/ioteqKernel/${boardDirectory}"
 fqbn='arduino:avr:mega'
 core='arduino:avr'
-projectDirectory="/Users/reidwilliams/Repositories/electron-project/electron-project/app/scripts"
+projectDirectory="/Users/reidwilliams/Repositories/firmware-upload-and-test-app/app/scripts"
 
 cd $firmwareRepo
 git pull -v

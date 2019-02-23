@@ -5,7 +5,7 @@ const mainProcess = remote.require('./main.js');
 var btns = document.querySelectorAll('.btn');
 
 btns.forEach(function(btn) {
-    if(!btn.classList.contains('flash')) {
+    if(!btn.classList.contains('flash') && !btn.classList.contains('test')) {
         btn.addEventListener('click', (btn) => {
         var newSectionName = btn.srcElement.getAttribute('name');
 
@@ -65,7 +65,7 @@ function runBootLoader(folder){
             runfirmwareInstallation(folder)
         }
         else if (data.includes('Upload Failed')){
-            ipc.send('set-progressbar-completed');
+            ipc.send('set-progressbar-completed', "Upload Failed");
         }
     });
     
@@ -81,11 +81,55 @@ function runfirmwareInstallation(folder){
 
     python.on('exit', function(code){
         if(code === 0){
-            ipc.send('set-progressbar-completed', "Success");
+            ipc.send('set-progressbar-completed', "Upload Success");
         }
         else {
-            ipc.send('set-progressbar-completed', "Failed");
+            ipc.send('set-progressbar-completed', "Upload Failed");
         }
     })
 }
 
+function runTest(card_type){
+
+    var python = require('child_process').spawn('python3', ['./app/scripts/test.py', card_type]);
+
+    python.stdout.pipe(process.stdout);
+    python.stderr.pipe(process.stderr);
+
+    python.on('exit', function(code){
+        if(code === 0){
+            ipc.send('set-progressbar-completed', "Test Successful");
+        }
+        else {
+            ipc.send('set-progressbar-completed', "Test Failed");
+        }
+    })
+}
+
+var testBtns = document.querySelectorAll('.test');
+
+testBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
+    
+    ipc.send('show-progressbar');
+        
+    var card_type = 0;
+    var board = btn.srcElement.getAttribute('name');
+
+    switch (board){
+        case 'analog':
+            card_type = 1;
+            break;
+        case 'frequency':
+            card_type = 2;
+            break;
+        case 'canbus':
+            card_type = 7; 
+            break;
+        case 'mosfet':
+            card_type = 4;
+            break;
+    }
+
+    ipc.send('update-progressbar', "Running Test...");
+    runTest(card_type);
+})});
