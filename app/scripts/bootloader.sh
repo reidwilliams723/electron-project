@@ -1,4 +1,4 @@
-port='/dev/cu.usbmodem142230'
+port='/dev/arduino'
 avrDirectory='/Applications/Arduino.app/Contents/Java/hardware/tools/avr'
 
 cd $avrDirectory

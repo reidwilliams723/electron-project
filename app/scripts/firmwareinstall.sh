@@ -1,6 +1,6 @@
 #Variables
 boardDirectory="newFirmware/${1}"
-port="/dev/cu.usbmodem142230"
+port="/dev/board"
 firmwareRepo="/Users/reidwilliams/Repositories/ioteqKernel/${boardDirectory}"
 fqbn='arduino:avr:mega'
 core='arduino:avr'

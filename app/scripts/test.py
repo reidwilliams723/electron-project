@@ -14,9 +14,10 @@ FAILED_TEST = 0
 
 #################### VARIABLES ####################
 CARD_TYPE = int(sys.argv[1])
-BACKPLANE_SERIAL_PORT = "/dev/cu.usbserial-AH060YLI"
+BACKPLANE_SERIAL_PORT = "/dev/dtech"
 REGISTER_COUNT = 0
 STARTING_REGISTER = 10
+ANALOG_TEST_VALUES = []
 FREQUENCY_TEST_VALUE = 936
 ADDRESS = 1
 ####################################################
