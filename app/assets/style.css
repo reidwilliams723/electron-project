@@ -53,6 +53,11 @@ html, body {
     background-color: rgb(27,62,111);
 }
 
+.modal-header{
+    background-color: rgb(27,62,111);
+    padding: 20px;
+}
+
 .btn.btn-primary {
     background-color: rgb(0,167,169);
     color: rgb(244,251,254);

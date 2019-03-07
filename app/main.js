@@ -4,12 +4,12 @@ const {app, BrowserWindow, ipcMain} = require('electron')
 const ProgressBar = require('electron-progressbar');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow;
+let modal;
 let progressBar;
 let uploadStatus;
 
 function createWindow () {
-
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
@@ -19,15 +19,20 @@ function createWindow () {
     }
   })
 
+  modalSetup();
+
   //mainWindow.setFullScreen(true);
   // and load the index.html of the app.
   mainWindow.loadFile('./app/index.html')
 
-  ipcMain.on('show-progressbar', showProgressbar);
+  // ipcMain.on('show-progressbar', showProgressbar);
 	
-  ipcMain.on('set-progressbar-completed', (event, args) => setProgressbarCompleted(args));
+  // ipcMain.on('set-progressbar-completed', (event, args) => setProgressbarCompleted(args));
   
-  ipcMain.on('update-progressbar', (event, args) => updateProgressText(args))
+  // ipcMain.on('update-progressbar', (event, args) => updateProgressText(args))
+
+  // ipcMain.on('open-modal', openModal);
+  // ipcMain.on('close-modal', closeModal);
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
@@ -44,7 +49,7 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -63,50 +68,21 @@ app.on('activate', function () {
   }
 })
 
-function showProgressbar () {
-	if (progressBar) {
-		return;
-	}
-	
-	progressBar = new ProgressBar({
-		text: 'Uploading...',
-    detail: 'Wait...',
-    closeOnComplete: false,
-		browserWindow: {
-      parent: mainWindow,
-      modal: true,
-      closable: true
-		}
-	});
-	
-	progressBar
-		.on('completed', function() {
-			progressBar = null;
+function modalSetup(){
+  ipcMain.on('open-modal', (event, args) => {
+    modal = new BrowserWindow({
+      parent: mainWindow, 
+      modal: true, 
+      show: false, 
+      //width: 400, 
+      //height: 200,
+      center: true 
     });
-    
-    progressBar
-      .on('aborted', function() {
-        progressBar = null;
-      });
-	
-	// launch the task...
-	// launchTask();
-}
-
-function setProgressbarCompleted (args) {
-	if (progressBar) {
-    progressBar.text = args
-    progressBar.detail = 'Exiting...';
-    setTimeout(function(){
-      progressBar.setCompleted();
-    }, 3000);
-	}
-}
-
-function updateProgressText(args) {
-  if (progressBar) {
-    progressBar.text = args;
-    setTimeout(function(){
-    }, 3000);
-  }
+    modal.loadFile('./app/modal.html');
+    modal.show();
+    modal.webContents.on('did-finish-load', () => {
+      modal.webContents.openDevTools()
+      modal.webContents.send('get-data', args);
+      });  
+  });
 }
