@@ -1,21 +1,21 @@
-#Variables
+    #Variables
 boardDirectory="newFirmware/${1}"
 port="/dev/board"
-firmwareRepo="/Users/reidwilliams/Repositories/ioteqKernel/${boardDirectory}"
+firmwareRepo="/home/ioteq/Documents/ioteqKernel/${boardDirectory}"
 fqbn='arduino:avr:mega'
 core='arduino:avr'
-projectDirectory="/Users/reidwilliams/Repositories/firmware-upload-and-test-app/app/scripts"
+projectDirectory="/home/ioteq/Documents/electron-project/app/scripts"
 
-cd $firmwareRepo
-git pull -v
+#  cd $firmwareRepo
+#  git pull -v
 
 cd $projectDirectory
 
-echo Updating index
-arduino-cli core update-index
+ echo Updating index
+ arduino-cli core update-index
 
-echo Retrieving board list
-boardListOutput=$(arduino-cli board list)
+ echo Retrieving board list
+ boardListOutput=$(arduino-cli board list)
 
 if [[ $boardListOutput != *"Arduino/Genuino Mega or Mega 2560"* ]]; then
     echo Installing core $core
@@ -24,10 +24,10 @@ if [[ $boardListOutput != *"Arduino/Genuino Mega or Mega 2560"* ]]; then
     echo Retrieving board list again
     boardListOutput=$(arduino-cli board list)
 
-    if [[ $boardListOutput != *"Arduino/Genuino Mega or Mega 2560"* ]]; then
-        echo Upload Failed
-        exit 1
-    fi
+    # if [[ $boardListOutput != *"Arduino/Genuino Mega or Mega 2560"* ]]; then
+    #     echo Upload Failed
+    #     exit 1
+    # fi
 fi
 
 echo Compiling code
