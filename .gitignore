@@ -1,2 +1,3 @@
 node_modules
 app/scripts/path.config
+app/scripts/__pycache__

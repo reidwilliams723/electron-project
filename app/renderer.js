@@ -38,7 +38,7 @@ flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
             folder = 'AnalogInputs4_20';
             break;
         case 'frequency':
-            folder += 'FreqInput_Type5';
+            folder += 'FreqInput';
             break;
         case 'canbus':
             folder += 'Engine_Can_Type_7';

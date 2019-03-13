@@ -27,10 +27,10 @@ sleep .5; echo "Installing core ${CORE}"
 sleep .5; arduino-cli core install $CORE | tee
 
 sleep .5; echo "Compiling code..."
-sleep .5; arduino-cli compile --fqbn $FQBN  $BOARD_DIRECTORY | tee
+sleep .5; arduino-cli compile --fqbn $FQBN  $BOARD_DIRECTORY --verbose | tee
 
 # Check exit code of the compiled command, exit script if error occured
-if [[ ${PIPESTATUS[0]} != 0 ]]; then
+if [[ ${PIPESTATUS[0]} -ne "0" ]]; then
     exit 1
 fi
 
@@ -44,7 +44,7 @@ rm "${BOARD_DIRECTORY}/${1}.arduino.avr.mega.hex"
 
 
 # Check exit code of the upload command, exit script if error occured
-if [[ ${PIPESTATUS[2]} != 0 ]]; then
+if [[ ${PIPESTATUS[0]} -ne "0" ]]; then
     exit 1
 fi
 

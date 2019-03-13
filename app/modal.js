@@ -12,16 +12,19 @@ ipc.on('get-data', function(event, args){
             runTest(args.cardType);
             break;
         case "Uploading":
-            //runBootLoader(args.folder);
-            runfirmwareInstallation(args.folder);
+            runBootLoader(args.folder);
             break;
     } 
 });
 
-
-document.querySelector('#closeBtn').addEventListener('click', () => {
+ipc.on('kill-process', function(){
     if(spawn.exitCode == null)
         process.kill(spawn.pid);
+});
+
+
+document.querySelector('#closeBtn').addEventListener('click', () => {
+
 
     modal = remote.getCurrentWindow();
     modal.close();
@@ -55,6 +58,19 @@ function runTest(card_type){
         mydiv.innerHTML = data;
         document.querySelector('#data').append(mydiv);
     });
+
+    spawn.on('exit', function(code){
+        if(code == 1){
+            results.setAttribute('class', 'error')
+            results.innerHTML = "Upload Failed"
+        }
+        else if (code == 0){
+            results.setAttribute('class', 'success')
+            results.innerHTML = "Upload Success"
+        }
+        
+        document.getElementById("okayBtn").disabled = false;
+    });
 }
 
 function runfirmwareInstallation(folder){
@@ -74,7 +90,7 @@ function runfirmwareInstallation(folder){
     spawn.stderr.on('data', function(data){
         data = data.toString();
         var mydiv = document.createElement('div');
-        mydiv.setAttribute('class', 'error')
+        //mydiv.setAttribute('class', 'error')
         mydiv.innerHTML = data;
         document.querySelector('#data').appendChild(mydiv);
     });
@@ -105,19 +121,37 @@ function runBootLoader(folder){
     //bootLoader.stderr.pipe(process.stderr);
 
     spawn.stdout.on('data', function(data){
-
         data = data.toString();
         var mydiv = document.createElement('div');
         mydiv.innerHTML = data;
-        document.querySelector('#data').append(mydiv);
-        document.querySelector('#data').appendChild(document.createElement('br'));
+        document.querySelector('#data').appendChild(mydiv);
+        document.querySelector('#data').scrollTop = 5000
     });
 
     spawn.stderr.on('data', function(data){
         data = data.toString();
         var mydiv = document.createElement('div');
+        //mydiv.setAttribute('class', 'error')
         mydiv.innerHTML = data;
         document.querySelector('#data').appendChild(mydiv);
+        document.querySelector('#data').scrollTop = 5000
+    });
+
+    spawn.on('exit', function(code){
+        var mydiv = document.createElement('div');
+        document.querySelector('#data').appendChild(mydiv);
+        document.querySelector('#data').scrollTop = 5000
+        var results = document.querySelector('#results');
+
+        if(code == 1){
+            results.setAttribute('class', 'error')
+            results.innerHTML = "Upload Failed"
+            document.getElementById("results").hidden = false;
+            document.getElementById("okayBtn").disabled = false;
+        }
+        else if (code == 0){
+            runfirmwareInstallation(folder)
+        }
     });
     
 }

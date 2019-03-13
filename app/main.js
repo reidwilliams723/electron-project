@@ -25,17 +25,8 @@ function createWindow () {
   // and load the index.html of the app.
   mainWindow.loadFile('./app/index.html')
 
-  // ipcMain.on('show-progressbar', showProgressbar);
-	
-  // ipcMain.on('set-progressbar-completed', (event, args) => setProgressbarCompleted(args));
-  
-  // ipcMain.on('update-progressbar', (event, args) => updateProgressText(args))
-
-  // ipcMain.on('open-modal', openModal);
-  // ipcMain.on('close-modal', closeModal);
-
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -81,8 +72,11 @@ function modalSetup(){
     modal.loadFile('./app/modal.html');
     modal.show();
     modal.webContents.on('did-finish-load', () => {
-      modal.webContents.openDevTools()
+      //modal.webContents.openDevTools()
       modal.webContents.send('get-data', args);
-      });  
+      });
+    modal.on('close', function() {
+      modal.webContents.send('kill-process');
+    });   
   });
 }
