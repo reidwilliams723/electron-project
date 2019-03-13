@@ -74,8 +74,8 @@ function modalSetup(){
       parent: mainWindow, 
       modal: true, 
       show: false, 
-      //width: 400, 
-      //height: 200,
+      width: 500,
+      height: 400,
       center: true 
     });
     modal.loadFile('./app/modal.html');

@@ -17,9 +17,9 @@ btns.forEach(function(btn) {
 });
 
 function getSectionId(btn){
-    btn = btn.srcElement;
+    btn = btn.srcElement; 
     if(btn.getAttribute('class').includes('back')){
-        return btn.parentElement.parentElement.parentElement.parentElement.id;
+        return btn.parentElement.parentElement.id;
     }
     else
         return btn.parentElement.parentElement.parentElement.id;

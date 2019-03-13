@@ -12,8 +12,8 @@ ipc.on('get-data', function(event, args){
             runTest(args.cardType);
             break;
         case "Uploading":
-            runBootLoader(args.folder);
-            //runfirmwareInstallation(args.folder);
+            //runBootLoader(args.folder);
+            runfirmwareInstallation(args.folder);
             break;
     } 
 });
@@ -28,6 +28,12 @@ document.querySelector('#closeBtn').addEventListener('click', () => {
 
 });
 
+document.querySelector('#okayBtn').addEventListener('click', () => {
+    modal = remote.getCurrentWindow();
+    modal.close();
+
+});
+
 function runTest(card_type){
 
     spawn = require('child_process').spawn('python3', ['-u', './app/scripts/test.py', card_type]);
@@ -36,10 +42,9 @@ function runTest(card_type){
     spawn.stderr.pipe(process.stderr);
 
     spawn.stdout.on('data', function(data){
-        data = data.toString();
+        data = data.toString(); 
         var mydiv = document.createElement('div');
         mydiv.innerHTML = data;
-        console.log("HI");
         document.querySelector('#data').append(mydiv);
     });
 
@@ -63,13 +68,34 @@ function runfirmwareInstallation(folder){
         var mydiv = document.createElement('div');
         mydiv.innerHTML = data;
         document.querySelector('#data').appendChild(mydiv);
+        document.querySelector('#data').scrollTop = 5000
     });
 
     spawn.stderr.on('data', function(data){
         data = data.toString();
         var mydiv = document.createElement('div');
+        mydiv.setAttribute('class', 'error')
         mydiv.innerHTML = data;
         document.querySelector('#data').appendChild(mydiv);
+    });
+
+    spawn.on('exit', function(code){
+        var mydiv = document.createElement('div');
+        document.querySelector('#data').appendChild(mydiv);
+        document.querySelector('#data').scrollTop = 5000
+        var results = document.querySelector('#results');
+
+        if(code == 1){
+            results.setAttribute('class', 'error')
+            results.innerHTML = "Upload Failed"
+        }
+        else if (code == 0){
+            results.setAttribute('class', 'success')
+            results.innerHTML = "Upload Success"
+        }
+
+        document.getElementById("results").hidden = false;
+        document.getElementById("okayBtn").disabled = false;
     });
 }
 
