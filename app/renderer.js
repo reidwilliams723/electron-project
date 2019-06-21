@@ -25,6 +25,16 @@ function getSectionId(btn){
         return btn.parentElement.parentElement.parentElement.id;
 }
 
+var flashBtnsSBC = document.querySelectorAll('.flashSBC')
+
+flashBtnsSBC.forEach(function(btn) {btn.addEventListener('click', (btn) => {
+    flashSBC();
+})});
+
+function flashSBC() {
+    var flash =require('child_process').spawn('bash',['./app/scripts/sbc-flash.sh']);
+}
+
 var flashBtns = document.querySelectorAll('.flash');
 
 flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
