@@ -10,7 +10,7 @@ CORE="arduino:avr"
 
 echo "Checking for firmware updates..."
 cd $FIRMWARE_ROOT_DIRECTORY
-#sleep .5; git pull -v
+sleep .5; git pull -v
 
 # Move back to scripts directory
 cd $SCRIPTS_DIRECTORY

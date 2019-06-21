@@ -72,7 +72,7 @@ function modalSetup(){
     modal.loadFile('./app/modal.html');
     modal.show();
     modal.webContents.on('did-finish-load', () => {
-      //modal.webContents.openDevTools()
+      modal.webContents.openDevTools()
       modal.webContents.send('get-data', args);
       });
     modal.on('close', function() {

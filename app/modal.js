@@ -43,7 +43,6 @@ function runTest(card_type){
 
     spawn.stdout.pipe(process.stdout);
     spawn.stderr.pipe(process.stderr);
-
     spawn.stdout.on('data', function(data){
         data = data.toString(); 
         var mydiv = document.createElement('div');
@@ -58,8 +57,9 @@ function runTest(card_type){
         mydiv.innerHTML = data;
         document.querySelector('#data').append(mydiv);
     });
-
+    
     spawn.on('exit', function(code){
+        var results = document.querySelector('#results');
         if(code == 1){
             results.setAttribute('class', 'error')
             results.innerHTML = "Upload Failed"
@@ -68,7 +68,7 @@ function runTest(card_type){
             results.setAttribute('class', 'success')
             results.innerHTML = "Upload Success"
         }
-        
+        results.innerHTML = "Upload Success"
         document.getElementById("okayBtn").disabled = false;
     });
 }

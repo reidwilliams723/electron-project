@@ -56,4 +56,4 @@ if CARD_TYPE == 1:
 
 #result = mbMaster.readInputRegisters(1,10,12,"REAL")
 #print(result['data'])
-
+sys.exit(0)
