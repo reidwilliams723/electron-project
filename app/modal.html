@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.slim.min.js"></script>
+    <!-- <script src="../node_modules/popper.js/dist/popper.min.js"></script> -->
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../app/assets/style.css" type='text/css'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h1 id='header' class="modal-title"></h1>
+      </div>
+
+      <!-- Modal body -->
+      <div  class="modal-body">
+        <div class='container'>
+          <div class='row'>
+            <div class='data-box' id='data'></div>
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer justify-content-between">
+          <button id='closeBtn' type="button" class="btn btn-light w-25">Cancel</button>
+          <h2 hidden='true' class='mr-auto' id='results'>Place Holder</h2>
+          <button disabled='true' id='okayBtn' type="button" class="btn okayBtn w-25">Okay</button>
+      </div>
+    <script>
+        require('./modal.js')
+    </script>
+  </body>
+</html>

@@ -1,8 +1,8 @@
 const { remote, ipcRenderer } = require('electron');
 const ipc = require('electron').ipcRenderer;
 const mainProcess = remote.require('./main.js');
-
 var btns = document.querySelectorAll('.btn');
+let test;
 
 btns.forEach(function(btn) {
     if(!btn.classList.contains('flash') && !btn.classList.contains('test')) {
@@ -17,9 +17,9 @@ btns.forEach(function(btn) {
 });
 
 function getSectionId(btn){
-    btn = btn.srcElement;
+    btn = btn.srcElement; 
     if(btn.getAttribute('class').includes('back')){
-        return btn.parentElement.parentElement.parentElement.parentElement.id;
+        return btn.parentElement.parentElement.id;
     }
     else
         return btn.parentElement.parentElement.parentElement.id;
@@ -38,9 +38,7 @@ function flashSBC() {
 var flashBtns = document.querySelectorAll('.flash');
 
 flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
-    
-    ipc.send('show-progressbar');
-        
+     
     var folder = '';
     var board = btn.srcElement.getAttribute('name');
     var port = '/dev/cu.usbmodem142230';
@@ -60,70 +58,17 @@ flashBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
             break;
     }
 
-    ipc.send('update-progressbar', "Burning Bootloader...");
-    runBootLoader(folder);
+    ipc.send('open-modal', {modalType: "Uploading", folder: folder});
+
 })});
 
-function runBootLoader(folder){
-    var bootLoader = require('child_process').spawn('bash', ['./app/scripts/bootloader.sh']);
-    bootLoader.stdout.pipe(process.stdout);
-    bootLoader.stderr.pipe(process.stderr);
 
-    bootLoader.on('exit', function(code){
-        if(code === 0){
-            ipc.send('update-progressbar', "Bootloader complete!");
-            runfirmwareInstallation(folder)
-        }
-        else if (data.includes('Upload Failed')){
-            ipc.send('set-progressbar-completed', "Upload Failed");
-        }
-    });
-    
-}
-
-function runfirmwareInstallation(folder){
-    ipc.send('update-progressbar', "Uploading Firmware...");
-
-    var python = require('child_process').spawn('bash', ['./app/scripts/firmwareinstall.sh', folder]);
-
-    python.stdout.pipe(process.stdout);
-    python.stderr.pipe(process.stderr);
-
-    python.on('exit', function(code){
-        if(code === 0){
-            ipc.send('set-progressbar-completed', "Upload Success");
-        }
-        else {
-            ipc.send('set-progressbar-completed', "Upload Failed");
-        }
-    })
-}
-
-function runTest(card_type){
-
-    var python = require('child_process').spawn('python3', ['./app/scripts/test.py', card_type]);
-
-    python.stdout.pipe(process.stdout);
-    python.stderr.pipe(process.stderr);
-
-    python.on('exit', function(code){
-        if(code === 0){
-            ipc.send('set-progressbar-completed', "Test Successful");
-        }
-        else {
-            ipc.send('set-progressbar-completed', "Test Failed");
-        }
-    })
-}
 
 var testBtns = document.querySelectorAll('.test');
 
-testBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
-    
-    ipc.send('show-progressbar');
-        
-    var card_type = 0;
-    var board = btn.srcElement.getAttribute('name');
+testBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => { 
+    let card_type;
+    let board = btn.srcElement.getAttribute('name');
 
     switch (board){
         case 'analog':
@@ -140,6 +85,6 @@ testBtns.forEach(function(btn) {btn.addEventListener('click', (btn) => {
             break;
     }
 
-    ipc.send('update-progressbar', "Running Test...");
-    runTest(card_type);
+    ipc.send('open-modal', {modalType: "Testing", cardType: card_type});
 })});
+
