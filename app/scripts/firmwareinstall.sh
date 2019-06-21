@@ -1,53 +1,51 @@
+#!/bin/bash
+
+# Configurations that are machine specific
+. "$(pwd)/app/scripts/path.config"
+
 #Variables
-boardDirectory="newFirmware/${1}"
-port="/dev/board"
-firmwareRepo="/Users/reidwilliams/Repositories/ioteqKernel/${boardDirectory}"
-fqbn='arduino:avr:mega'
-core='arduino:avr'
-projectDirectory="/Users/reidwilliams/Repositories/firmware-upload-and-test-app/app/scripts"
+BOARD_DIRECTORY="${FIRMWARE_DIRECTORY}/${1}"
+FQBN="arduino:avr:mega"
+CORE="arduino:avr"
 
-cd $firmwareRepo
-git pull -v
+echo "Checking for firmware updates..."
+cd $FIRMWARE_ROOT_DIRECTORY
+sleep .5; git pull -v
 
-cd $projectDirectory
+# Move back to scripts directory
+cd $SCRIPTS_DIRECTORY
 
-echo Updating index
-arduino-cli core update-index
+# Using sleep commands so the piped output to the UI is more legible
 
-echo Retrieving board list
-boardListOutput=$(arduino-cli board list)
+sleep .5; echo "Updating index"
+sleep .5; arduino-cli core update-index | tee
 
-if [[ $boardListOutput != *"Arduino/Genuino Mega or Mega 2560"* ]]; then
-    echo Installing core $core
-    arduino-cli core install $core
+sleep .5; echo "Retrieving board list..."
+sleep .5; arduino-cli board list | tee
 
-    echo Retrieving board list again
-    boardListOutput=$(arduino-cli board list)
+sleep .5; echo "Installing core ${CORE}"
+sleep .5; arduino-cli core install $CORE | tee
 
-    if [[ $boardListOutput != *"Arduino/Genuino Mega or Mega 2560"* ]]; then
-        echo Upload Failed
-        exit 1
-    fi
-fi
+sleep .5; echo "Compiling code..."
+sleep .5; arduino-cli compile --fqbn $FQBN  $BOARD_DIRECTORY --verbose | tee
 
-echo Compiling code
-compileOutput=$(arduino-cli compile --fqbn $fqbn  $firmwareRepo)
-echo compileOutput
-if [[ $compileOutput == *"Compilation Failed"* ]]; then
-    echo Upload Failed
+# Check exit code of the compiled command, exit script if error occured
+if [[ ${PIPESTATUS[0]} -ne "0" ]]; then
     exit 1
 fi
 
-echo Uploading code
-uploadOutput=$(arduino-cli upload -p $port --fqbn $fqbn $firmwareRepo --verbose)
-echo $uploadOutput
-if [[ $uploadOutput == *"Please compile first"* || $uploadOutput == *"Error"* ]]; then
-    echo Upload Failed
+# Setting a timeout...upload command won't exit at times if it fails. The duration can be set in path.config
+sleep .5; echo "Uploading code..."
+sleep .5; $TIMEOUT_COMMAND $TIMEOUT_DURATION arduino-cli upload -p $BOARD_PORT --fqbn $FQBN $BOARD_DIRECTORY --verbose | tee
+
+#Remove compiled files from repo
+rm "${BOARD_DIRECTORY}/${1}.arduino.avr.mega.elf"
+rm "${BOARD_DIRECTORY}/${1}.arduino.avr.mega.hex"
+
+
+# Check exit code of the upload command, exit script if error occured
+if [[ ${PIPESTATUS[0]} -ne "0" ]]; then
     exit 1
 fi
 
-rm "${firmwareRepo}/${1}.arduino.avr.mega.elf"
-rm "${firmwareRepo}/${1}.arduino.avr.mega.hex"
-
-echo Upload Success
 exit 0
