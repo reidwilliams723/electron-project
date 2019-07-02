@@ -14,6 +14,8 @@ ipc.on('get-data', function(event, args){
         case "Uploading":
             runBootLoader(args.folder);
             break;
+        case "SBC":
+            runSBC();
     } 
 });
 
@@ -36,6 +38,47 @@ document.querySelector('#okayBtn').addEventListener('click', () => {
     modal.close();
 
 });
+
+function runSBC() {
+    spawn =require('child_process').spawn('bash',['./app/scripts/sbc-flash.sh']);
+    spawn.stdout.pipe(process.stdout);
+    spawn.stderr.pipe(process.stderr);
+
+    spawn.stdout.on('data', function(data){
+        data = data.toString();
+        var mydiv = document.createElement('div');
+        mydiv.innerHTML = data;
+        document.querySelector('#data').appendChild(mydiv);
+        document.querySelector('#data').scrollTop = 5000
+    });
+
+    spawn.stderr.on('data', function(data){
+        data = data.toString();
+        var mydiv = document.createElement('div');
+        //mydiv.setAttribute('class', 'error')
+        mydiv.innerHTML = data;
+        document.querySelector('#data').appendChild(mydiv);
+    });
+
+    spawn.on('exit', function(code){
+        var mydiv = document.createElement('div');
+        document.querySelector('#data').appendChild(mydiv);
+        document.querySelector('#data').scrollTop = 5000
+        var results = document.querySelector('#results');
+
+        if(code == 1){
+            results.setAttribute('class', 'error')
+            results.innerHTML = "Upload Failed"
+        }
+        else if (code == 0){
+            results.setAttribute('class', 'success')
+            results.innerHTML = "Upload Success"
+        }
+
+        document.getElementById("results").hidden = false;
+        document.getElementById("okayBtn").disabled = false;
+    });
+}
 
 function runTest(card_type){
 

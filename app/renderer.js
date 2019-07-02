@@ -28,12 +28,9 @@ function getSectionId(btn){
 var flashBtnsSBC = document.querySelectorAll('.flashSBC')
 
 flashBtnsSBC.forEach(function(btn) {btn.addEventListener('click', (btn) => {
-    flashSBC();
+    ipc.send('open-modal', {modalType: "SBC"});
 })});
 
-function flashSBC() {
-    var flash =require('child_process').spawn('bash',['./app/scripts/sbc-flash.sh']);
-}
 
 var flashBtns = document.querySelectorAll('.flash');
 
